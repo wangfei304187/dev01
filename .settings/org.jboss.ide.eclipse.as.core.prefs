@@ -1,2 +1,2 @@
 eclipse.preferences.version=1
-org.jboss.ide.eclipse.as.core.singledeployable.deployableList=
+org.jboss.ide.eclipse.as.core.singledeployable.deployableList=lib/gluegen-rt.jar\nlib/jogl-all-natives-windows-amd64.jar\nlib/jogl-all.jar\nlib/jogl-all-natives-windows-i586.jar\nlib/gluegen-rt-natives-windows-i586.jar\nlib/gluegen-rt-natives-windows-amd64.jar\n
