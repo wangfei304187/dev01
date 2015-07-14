@@ -88,7 +88,7 @@ public class ImageUtils {
     }
 
     // y = 255(x-min)/(max-min)
-    public static byte[] create8BitImage(int w, int h, short[] pixels) {
+    public static byte[] create8BitImage(int w, int h, short[] pixels) {  // ASC using by Java2D
         byte[] pixels8 = null;
         int size = w * h;
         if (pixels8 == null) {
@@ -107,6 +107,29 @@ public class ImageUtils {
                 value = (int)(255.0 * (x - ImageUtils.min) / (ImageUtils.max - ImageUtils.min) + 0.5);
             }
             pixels8[i] = (byte) value;
+        }
+        return pixels8;
+    }
+
+    public static byte[] create8BitImageDESC(int w, int h, short[] pixels) {  // DESC using by JOGL glDrawPixels(...)
+        byte[] pixels8 = null;
+        int size = w * h;
+        if (pixels8 == null) {
+            pixels8 = new byte[size];
+        }
+        int value = 0;
+        for (int i = size-1; i >= 0; i--) {
+            int x = pixels[i];
+            if (x <= ImageUtils.min) {
+                value = 0;
+            }
+            else if (x >= ImageUtils.max) {
+                value = 255;
+            }
+            else {
+                value = (int)(255.0 * (x - ImageUtils.min) / (ImageUtils.max - ImageUtils.min) + 0.5);
+            }
+            pixels8[size-1 - i] = (byte) value;
         }
         return pixels8;
     }

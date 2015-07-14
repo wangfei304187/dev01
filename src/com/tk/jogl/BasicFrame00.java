@@ -107,7 +107,8 @@ public class BasicFrame00 implements GLEventListener {
 
             System.out.println("levValue: " + levValue + ", winValue: " + winValue);
 
-            byte[] pixels8 = ImageUtils.create8BitImage(imgWidth, imgHeight, pixels);
+            //            byte[] pixels8 = ImageUtils.create8BitImage(imgWidth, imgHeight, pixels);
+            byte[] pixels8 = ImageUtils.create8BitImageDESC(imgWidth, imgHeight, pixels);
 
             int w = imgWidth;
             int h = imgHeight;
@@ -122,7 +123,7 @@ public class BasicFrame00 implements GLEventListener {
             glu.gluOrtho2D(0, 512, 0, 512);
 
 
-            //            gl.glPixelZoom(0.5f, 0.5f); // ** Zoom
+            gl.glPixelZoom(0.5f, 0.5f); // ** Zoom
 
             //            gl.glRasterPos2i(256, 256);
             //            gl.glWindowPos2i(0, 0);
