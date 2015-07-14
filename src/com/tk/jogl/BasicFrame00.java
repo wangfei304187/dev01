@@ -1,5 +1,7 @@
 package com.tk.jogl;
 
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowStateListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.nio.Buffer;
@@ -14,11 +16,20 @@ import com.jogamp.opengl.GLCapabilities;
 import com.jogamp.opengl.GLEventListener;
 import com.jogamp.opengl.GLProfile;
 import com.jogamp.opengl.awt.GLCanvas;
+import com.jogamp.opengl.glu.GLU;
 import com.tk.img.ImageUtils;
+
+//http://www.java-tips.org/other-api-tips-100035/112-jogl/1689-outline-fonts-nehe-tutorial-jogl-port.html
+
+// http://blog.csdn.net/ryfdizuo/article/details/45442745 ****
+
+// http://blog.csdn.net/vagrxie/article/details/5094735
 
 // http://www.yiibai.com/jogl/jogl_installation.html
 
 // http://www3.ntu.edu.sg/home/ehchua/programming/opengl/CG_Introduction.html
+
+// http://bbs.csdn.net/topics/390408888?page=1
 
 public class BasicFrame00 implements GLEventListener {
     @Override
@@ -27,7 +38,8 @@ public class BasicFrame00 implements GLEventListener {
         final GL2 gl = drawable.getGL().getGL2();
 
         gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f); // Set background color to black and opaque
-        gl.glClear(GL.GL_COLOR_BUFFER_BIT); // Clear the color buffer (background)
+        //        gl.glClear(GL.GL_COLOR_BUFFER_BIT); // Clear the color buffer (background)
+        gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
 
         // Draw a Red 1x1 Square centered at origin
         //        gl.glBegin(GL2GL3.GL_QUADS); // Each set of 4 vertices form a quad
@@ -80,6 +92,7 @@ public class BasicFrame00 implements GLEventListener {
 
         // Ref: http://bbs.csdn.net/topics/390408888?page=1
 
+
         int defaultWinWidth = 1 << 12;
 
         int imgWidth = 512;
@@ -99,12 +112,39 @@ public class BasicFrame00 implements GLEventListener {
             int w = imgWidth;
             int h = imgHeight;
 
-            Buffer imgData = ByteBuffer.wrap(pixels8);
+            Buffer imgBuffer = ByteBuffer.wrap(pixels8);
 
             //            Buffer imgData2 = ShortBuffer.wrap(pixels);
 
             //            gl.glDrawPixels(w, h, GL.GL_BGR, GL.GL_UNSIGNED_BYTE, imgData);
-            gl.glDrawPixels(w, h, GL.GL_LUMINANCE, GL.GL_UNSIGNED_BYTE, imgData);
+
+            final GLU glu = new GLU();
+            glu.gluOrtho2D(0, 512, 0, 512);
+
+
+            //            gl.glPixelZoom(0.5f, 0.5f); // ** Zoom
+
+            //            gl.glRasterPos2i(256, 256);
+            //            gl.glWindowPos2i(0, 0);
+            //            gl.glRotatef(180f, 1.0f, 1.0f, 0.0f);
+            //            gl.glTranslatef(256, 256, 0);
+            //            gl.glRasterPos2i(0, 0);
+
+            gl.glDrawPixels(w, h, GL.GL_LUMINANCE, GL.GL_UNSIGNED_BYTE, imgBuffer);
+
+            //            glu.gluLookAt(0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0, 1.0 ,0.0);
+
+            //            gl.glRotatef(90f, 0.0f, 1.0f, 0.0f);
+
+            //            gl.glBegin(GL2GL3.GL_QUADS); // Each set of 4 vertices form a quad
+            //            gl.glColor3f(0.0f, 1.0f, 0.0f); // Red
+            //            gl.glVertex2f(-256f, -256f); // x, y
+            //            gl.glVertex2f(256f, -256f);
+            //            gl.glVertex2f(256f, 256f);
+            //            gl.glVertex2f(-256f, 256f);
+            //            gl.glEnd();
+
+
 
             gl.glFlush(); // Render now
         }catch(Exception e) {
@@ -127,8 +167,32 @@ public class BasicFrame00 implements GLEventListener {
     }
 
     @Override
-    public void reshape(GLAutoDrawable arg0, int arg1, int arg2, int arg3, int arg4) {
-        System.out.println("reshape");
+    public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
+        //        System.out.println("reshape");
+        //        System.out.println("width: " + width + "; height: " + height);
+        //        final GL2 gl = drawable.getGL().getGL2();
+        //        final GLU glu = new GLU();
+        //        // Compute aspect ratio of the new window
+        //        if (height == 0)
+        //        {
+        //            height = 1;                // To prevent divide by 0
+        //        }
+        //        //        GLfloat aspect = (GLfloat)width / (GLfloat)height;
+        //        float aspect = width*1.0f/height;
+        //
+        //        // Set the viewport to cover the new window
+        //        gl.glViewport(0, 0, width, height);
+        //
+        //        //         Set the aspect ratio of the clipping area to match the viewport
+        //        gl.glMatrixMode(GLMatrixFunc.GL_PROJECTION);  // To operate on the Projection matrix
+        //        gl.glLoadIdentity();             // Reset the projection matrix
+        //        if (width >= height) {
+        //            // aspect >= 1, set the height from -1 to 1, with larger width
+        //            glu.gluOrtho2D(-1.0 * aspect, 1.0 * aspect, -1.0, 1.0);
+        //        } else {
+        //            // aspect < 1, set the width to -1 to 1, with larger height
+        //            glu.gluOrtho2D(-1.0, 1.0, -1.0 / aspect, 1.0 / aspect);
+        //        }
     }
 
     public static void main(String[] args) {
@@ -139,9 +203,18 @@ public class BasicFrame00 implements GLEventListener {
         final GLCanvas glcanvas = new GLCanvas(capabilities);
         BasicFrame00 b = new BasicFrame00();
         glcanvas.addGLEventListener(b);
-        glcanvas.setSize(400, 400);
+        glcanvas.setSize(512, 512);
         // creating frame
-        final JFrame frame = new JFrame("Basic Frame");
+        final JFrame frame = new JFrame("Basic Frame - Image & JOGL");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        //        frame.setSize(600, 600);
+        frame.addWindowStateListener(new WindowStateListener() {
+            @Override
+            public void windowStateChanged(WindowEvent e)
+            {
+                glcanvas.repaint();
+            }
+        });
         // adding canvas to frame
         frame.getContentPane().add(glcanvas);
         frame.setSize(frame.getContentPane().getPreferredSize());
