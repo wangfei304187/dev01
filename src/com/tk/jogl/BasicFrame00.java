@@ -1,5 +1,9 @@
 package com.tk.jogl;
 
+import java.awt.BorderLayout;
+import java.awt.Container;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowStateListener;
 import java.io.File;
@@ -16,7 +20,9 @@ import com.jogamp.opengl.GLCapabilities;
 import com.jogamp.opengl.GLEventListener;
 import com.jogamp.opengl.GLProfile;
 import com.jogamp.opengl.awt.GLCanvas;
+import com.jogamp.opengl.fixedfunc.GLMatrixFunc;
 import com.jogamp.opengl.glu.GLU;
+import com.jogamp.opengl.util.gl2.GLUT;
 import com.tk.img.ImageUtils;
 
 //http://www.java-tips.org/other-api-tips-100035/112-jogl/1689-outline-fonts-nehe-tutorial-jogl-port.html
@@ -123,7 +129,7 @@ public class BasicFrame00 implements GLEventListener {
             glu.gluOrtho2D(0, 512, 0, 512);
 
 
-            gl.glPixelZoom(0.5f, 0.5f); // ** Zoom
+            //            gl.glPixelZoom(0.5f, 0.5f); // ** Zoom
 
             //            gl.glRasterPos2i(256, 256);
             //            gl.glWindowPos2i(0, 0);
@@ -145,7 +151,29 @@ public class BasicFrame00 implements GLEventListener {
             //            gl.glVertex2f(-256f, 256f);
             //            gl.glEnd();
 
+            // *********** Draw String ************
+            //gl.glPixelZoom(0.5f, 0.5f); // ** Zoom
+            GLUT glut = new GLUT();
+            float textPosx = 10f;
+            float textPosy = 10f;
+            // Move to rastering position
+            //            gl.glRasterPos2f(textPosx, textPosy);
+            gl.glWindowPos2f(textPosx, textPosy);
+            gl.glColor3f(1.0f, 1.0f, 1.0f);
+            // convert text to bitmap and tell what string to put
+            glut.glutBitmapString(GLUT.BITMAP_HELVETICA_10, "Annotation");
 
+            //            gl.glRasterPos2f(0, 0);
+            gl.glWindowPos2f(0, 0);
+            // *********** Draw Line ************
+            gl.glBegin(GL.GL_LINES);
+            gl.glColor3f(1.0f, 0.51f, 0.98f); // #FF83FA
+            gl.glVertex2f(0f, 500f); // x, y
+            gl.glVertex2f(512f, 500f);
+
+            gl.glEnd();
+
+            gl.glColor3f(1.0f, 1.0f, 1.0f);
 
             gl.glFlush(); // Render now
         }catch(Exception e) {
@@ -169,31 +197,31 @@ public class BasicFrame00 implements GLEventListener {
 
     @Override
     public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
-        //        System.out.println("reshape");
-        //        System.out.println("width: " + width + "; height: " + height);
-        //        final GL2 gl = drawable.getGL().getGL2();
-        //        final GLU glu = new GLU();
-        //        // Compute aspect ratio of the new window
-        //        if (height == 0)
-        //        {
-        //            height = 1;                // To prevent divide by 0
-        //        }
-        //        //        GLfloat aspect = (GLfloat)width / (GLfloat)height;
-        //        float aspect = width*1.0f/height;
-        //
-        //        // Set the viewport to cover the new window
-        //        gl.glViewport(0, 0, width, height);
-        //
-        //        //         Set the aspect ratio of the clipping area to match the viewport
-        //        gl.glMatrixMode(GLMatrixFunc.GL_PROJECTION);  // To operate on the Projection matrix
-        //        gl.glLoadIdentity();             // Reset the projection matrix
-        //        if (width >= height) {
-        //            // aspect >= 1, set the height from -1 to 1, with larger width
-        //            glu.gluOrtho2D(-1.0 * aspect, 1.0 * aspect, -1.0, 1.0);
-        //        } else {
-        //            // aspect < 1, set the width to -1 to 1, with larger height
-        //            glu.gluOrtho2D(-1.0, 1.0, -1.0 / aspect, 1.0 / aspect);
-        //        }
+        System.out.println("reshape");
+        System.out.println("width: " + width + "; height: " + height);
+        final GL2 gl = drawable.getGL().getGL2();
+        final GLU glu = new GLU();
+        // Compute aspect ratio of the new window
+        if (height == 0)
+        {
+            height = 1;                // To prevent divide by 0
+        }
+        //        GLfloat aspect = (GLfloat)width / (GLfloat)height;
+        float aspect = width*1.0f/height;
+
+        // Set the viewport to cover the new window
+        gl.glViewport(0, 0, width, height);
+
+        //         Set the aspect ratio of the clipping area to match the viewport
+        gl.glMatrixMode(GLMatrixFunc.GL_PROJECTION);  // To operate on the Projection matrix
+        gl.glLoadIdentity();             // Reset the projection matrix
+        if (width >= height) {
+            // aspect >= 1, set the height from -1 to 1, with larger width
+            glu.gluOrtho2D(-1.0 * aspect, 1.0 * aspect, -1.0, 1.0);
+        } else {
+            // aspect < 1, set the width to -1 to 1, with larger height
+            glu.gluOrtho2D(-1.0, 1.0, -1.0 / aspect, 1.0 / aspect);
+        }
     }
 
     public static void main(String[] args) {
@@ -204,10 +232,25 @@ public class BasicFrame00 implements GLEventListener {
         final GLCanvas glcanvas = new GLCanvas(capabilities);
         BasicFrame00 b = new BasicFrame00();
         glcanvas.addGLEventListener(b);
-        glcanvas.setSize(512, 512);
+        glcanvas.setSize(800, 800);
+
+        glcanvas.addMouseMotionListener(new MouseMotionListener() {
+            @Override
+            public void mouseDragged(MouseEvent e)
+            {
+            }
+            @Override
+            public void mouseMoved(MouseEvent e)
+            {
+                System.out.println(e.getX() + ", " + e.getY());
+            }
+        });
+
         // creating frame
         final JFrame frame = new JFrame("Basic Frame - Image & JOGL");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        //        frame.setExtendedState(Frame.MAXIMIZED_BOTH);
+        //        frame.setUndecorated(true);
         //        frame.setSize(600, 600);
         frame.addWindowStateListener(new WindowStateListener() {
             @Override
@@ -217,8 +260,13 @@ public class BasicFrame00 implements GLEventListener {
             }
         });
         // adding canvas to frame
-        frame.getContentPane().add(glcanvas);
-        frame.setSize(frame.getContentPane().getPreferredSize());
+        Container c = frame.getContentPane();
+        c.setLayout(new BorderLayout());
+        frame.getContentPane().add(glcanvas, BorderLayout.CENTER);
+        frame.setSize(512 + 8 + 8, 512 + 30 + 8);
+        //        frame.setBounds(0, 0, 900, 900);
+        System.out.println(frame.getContentPane().getPreferredSize());
+        //        frame.setSize(frame.getContentPane().getPreferredSize());
         frame.setVisible(true);
     }
 }

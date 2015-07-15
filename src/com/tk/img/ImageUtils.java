@@ -1,11 +1,14 @@
 package com.tk.img;
 
 import java.awt.Image;
-import java.awt.Toolkit;
+import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
+import java.awt.image.DataBuffer;
+import java.awt.image.DataBufferByte;
 import java.awt.image.IndexColorModel;
-import java.awt.image.MemoryImageSource;
+import java.awt.image.Raster;
 import java.awt.image.SampleModel;
+import java.awt.image.WritableRaster;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -134,30 +137,30 @@ public class ImageUtils {
         return pixels8;
     }
 
-    private static Image createBufferedImage(int w, int h, byte[] pixels8) {
-        //		SampleModel sm = getIndexSampleModel(w, h);
-        //		DataBuffer db = new DataBufferByte(pixels8, w * h, 0);
-        //		WritableRaster raster = Raster.createWritableRaster(sm, db, null);
+    public static Image createBufferedImage(int w, int h, byte[] pixels8) {
+        SampleModel sm = ImageUtils.getIndexSampleModel(w, h);
+        DataBuffer db = new DataBufferByte(pixels8, w * h, 0);
+        WritableRaster raster = Raster.createWritableRaster(sm, db, null);
         ColorModel cm = ImageUtils.getDefaultColorModel();
-        //		Image image = new BufferedImage(cm, raster, false, null);
+        Image image = new BufferedImage(cm, raster, false, null);
 
-        MemoryImageSource imageSource = new MemoryImageSource(w, h, cm, pixels8, 0, w);
-        Image image = Toolkit.getDefaultToolkit().createImage(imageSource);
+        //        MemoryImageSource imageSource = new MemoryImageSource(w, h, cm, pixels8, 0, w);
+        //        Image image = Toolkit.getDefaultToolkit().createImage(imageSource);
 
         return image;
     }
 
-    //	private static SampleModel getIndexSampleModel(int w, int h) {
-    //		if (sampleModel == null) {
-    //			IndexColorModel icm = getDefaultColorModel();
-    //			WritableRaster wr = icm.createCompatibleWritableRaster(1, 1);
-    //			sampleModel = wr.getSampleModel();
-    //			sampleModel = sampleModel.createCompatibleSampleModel(w, h);
-    //		}
-    //		return sampleModel;
-    //	}
+    public static SampleModel getIndexSampleModel(int w, int h) {
+        if (ImageUtils.sampleModel == null) {
+            IndexColorModel icm = ImageUtils.getDefaultColorModel();
+            WritableRaster wr = icm.createCompatibleWritableRaster(1, 1);
+            ImageUtils.sampleModel = wr.getSampleModel();
+            ImageUtils.sampleModel = ImageUtils.sampleModel.createCompatibleSampleModel(w, h);
+        }
+        return ImageUtils.sampleModel;
+    }
 
-    private static IndexColorModel getDefaultColorModel() {
+    public static IndexColorModel getDefaultColorModel() {
         if (ImageUtils.defaultColorModel == null) {
             byte[] r = new byte[256];
             byte[] g = new byte[256];
