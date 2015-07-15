@@ -1,11 +1,9 @@
 package com.tk.jogl;
 
-import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowStateListener;
-import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.DataBuffer;
@@ -81,19 +79,20 @@ public class BasicFrame04 implements GLEventListener {
             //            System.out.println(img);
 
             //            AffineTransform gt = new AffineTransform();
-            AffineTransform gt = AffineTransform.getTranslateInstance(0, 0);
-            //            gt.translate (0, h);
-            AffineTransform flip = AffineTransform.getScaleInstance(-1.0d, 1.0d);
-            gt.concatenate(flip);
+            //            AffineTransform gt = AffineTransform.getTranslateInstance(0, 0);
+            //            //            gt.translate (0, h);
+            //            AffineTransform flip = AffineTransform.getScaleInstance(-1.0d, 1.0d);
+            //            gt.concatenate(flip);
+            //
+            //            Graphics2D g = img.createGraphics();
+            //
+            //
+            //            //            gt.scale(1d, -1d);
+            //            g.transform (gt);
+            //
+            //            g.drawImage (img, null, null);
 
-            Graphics2D g = img.createGraphics();
-
-
-            //            gt.scale(1d, -1d);
-            g.transform (gt);
-
-            g.drawImage (img, null, null);
-
+            com.jogamp.opengl.util.awt.ImageUtil.flipImageVertically(img);
 
             DataBufferByte buf = (DataBufferByte)raster.getDataBuffer();
             byte[] bytes = buf.getData();
@@ -131,6 +130,26 @@ public class BasicFrame04 implements GLEventListener {
             //            gl.glVertex2f(256f, 256f);
             //            gl.glVertex2f(-256f, 256f);
             //            gl.glEnd();
+
+
+            // *********** createThumbnail *************
+            // https://github.com/sgothel/jogl/tree/master/src/jogl/classes/com/jogamp/opengl/util/awt
+            //
+            //            BufferedImage bi = com.jogamp.opengl.util.awt.ImageUtil.createThumbnail(img, 100);
+            //            final JFrame frame = new JFrame("Load Image Sample");
+            //            frame.setSize(100, 100);
+            //            frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+            //            Container c = frame.getContentPane();
+            //            c.setLayout(new BorderLayout());
+            //            c.setBackground(Color.white);
+            //            ImageCanvas imgcanvas = new ImageCanvas();
+            //            com.jogamp.opengl.util.awt.ImageUtil.flipImageVertically(bi);
+            //            imgcanvas.setImage(bi);
+            //            imgcanvas.setImageWidth(100);
+            //            imgcanvas.setImageHeight(100);
+            //            c.add(imgcanvas, BorderLayout.CENTER);
+            //            imgcanvas.refresh();
+            //            frame.setVisible(true);
 
             gl.glFlush(); // Render now
         }catch(Exception e) {
@@ -190,7 +209,7 @@ public class BasicFrame04 implements GLEventListener {
         final GLCanvas glcanvas = new GLCanvas(capabilities);
         BasicFrame04 b = new BasicFrame04();
         glcanvas.addGLEventListener(b);
-        glcanvas.setSize(512, 512);
+        glcanvas.setSize(800, 800);
 
         glcanvas.addMouseMotionListener(new MouseMotionListener() {
             @Override

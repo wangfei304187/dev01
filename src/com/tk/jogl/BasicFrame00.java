@@ -3,7 +3,10 @@ package com.tk.jogl;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowStateListener;
 import java.io.File;
@@ -17,6 +20,7 @@ import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.GLCapabilities;
+import com.jogamp.opengl.GLContext;
 import com.jogamp.opengl.GLEventListener;
 import com.jogamp.opengl.GLProfile;
 import com.jogamp.opengl.awt.GLCanvas;
@@ -38,6 +42,22 @@ import com.tk.img.ImageUtils;
 // http://bbs.csdn.net/topics/390408888?page=1
 
 public class BasicFrame00 implements GLEventListener {
+
+    private static GLAutoDrawable drawable;
+    private static GLContext context;
+    @Override
+    public void init(GLAutoDrawable drawable) {
+        System.out.println("init");
+
+        BasicFrame00.drawable = drawable;
+        BasicFrame00.context = drawable.getContext();
+
+
+        final GL2 gl = drawable.getGL().getGL2();
+        // Set "clearing" or background color
+        gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f); // Black and opaque
+    }
+
     @Override
     public void display(GLAutoDrawable drawable) {
         System.out.println("display");
@@ -46,6 +66,8 @@ public class BasicFrame00 implements GLEventListener {
         gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f); // Set background color to black and opaque
         //        gl.glClear(GL.GL_COLOR_BUFFER_BIT); // Clear the color buffer (background)
         gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
+        gl.glMatrixMode(GLMatrixFunc.GL_MODELVIEW);      // To operate on Model-View matrix
+        gl.glLoadIdentity();                // Reset the model-view matrix
 
         // Draw a Red 1x1 Square centered at origin
         //        gl.glBegin(GL2GL3.GL_QUADS); // Each set of 4 vertices form a quad
@@ -116,6 +138,9 @@ public class BasicFrame00 implements GLEventListener {
             //            byte[] pixels8 = ImageUtils.create8BitImage(imgWidth, imgHeight, pixels);
             byte[] pixels8 = ImageUtils.create8BitImageDESC(imgWidth, imgHeight, pixels);
 
+
+
+
             int w = imgWidth;
             int h = imgHeight;
 
@@ -130,6 +155,8 @@ public class BasicFrame00 implements GLEventListener {
 
 
             //            gl.glPixelZoom(0.5f, 0.5f); // ** Zoom
+
+            //            gl.glScalef(0.5f, 0.5f, 0);
 
             //            gl.glRasterPos2i(256, 256);
             //            gl.glWindowPos2i(0, 0);
@@ -157,17 +184,18 @@ public class BasicFrame00 implements GLEventListener {
             float textPosx = 10f;
             float textPosy = 10f;
             // Move to rastering position
-            //            gl.glRasterPos2f(textPosx, textPosy);
-            gl.glWindowPos2f(textPosx, textPosy);
+            gl.glRasterPos2f(textPosx, textPosy);
+            //            gl.glWindowPos2f(textPosx, textPosy);
             gl.glColor3f(1.0f, 1.0f, 1.0f);
             // convert text to bitmap and tell what string to put
             glut.glutBitmapString(GLUT.BITMAP_HELVETICA_10, "Annotation");
 
-            //            gl.glRasterPos2f(0, 0);
-            gl.glWindowPos2f(0, 0);
+            gl.glRasterPos2f(0, 0);
+            //            gl.glWindowPos2f(0, 0);
             // *********** Draw Line ************
             gl.glBegin(GL.GL_LINES);
             gl.glColor3f(1.0f, 0.51f, 0.98f); // #FF83FA
+            //            gl.glLineWidth(5.0f);
             gl.glVertex2f(0f, 500f); // x, y
             gl.glVertex2f(512f, 500f);
 
@@ -188,14 +216,6 @@ public class BasicFrame00 implements GLEventListener {
     }
 
     @Override
-    public void init(GLAutoDrawable drawable) {
-        System.out.println("init");
-        final GL2 gl = drawable.getGL().getGL2();
-        // Set "clearing" or background color
-        gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f); // Black and opaque
-    }
-
-    @Override
     public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
         System.out.println("reshape");
         System.out.println("width: " + width + "; height: " + height);
@@ -212,6 +232,8 @@ public class BasicFrame00 implements GLEventListener {
         // Set the viewport to cover the new window
         gl.glViewport(0, 0, width, height);
 
+        //        gl.glPixelZoom(width/512.0f, height/512.0f); // ** Zoom
+
         //         Set the aspect ratio of the clipping area to match the viewport
         gl.glMatrixMode(GLMatrixFunc.GL_PROJECTION);  // To operate on the Projection matrix
         gl.glLoadIdentity();             // Reset the projection matrix
@@ -222,6 +244,10 @@ public class BasicFrame00 implements GLEventListener {
             // aspect < 1, set the width to -1 to 1, with larger height
             glu.gluOrtho2D(-1.0, 1.0, -1.0 / aspect, 1.0 / aspect);
         }
+
+        // 重置模型观察矩阵堆栈
+        //        gl.glMatrixMode(GLMatrixFunc.GL_MODELVIEW);
+        //        gl.glLoadIdentity();
     }
 
     public static void main(String[] args) {
@@ -233,6 +259,59 @@ public class BasicFrame00 implements GLEventListener {
         BasicFrame00 b = new BasicFrame00();
         glcanvas.addGLEventListener(b);
         glcanvas.setSize(800, 800);
+
+
+        glcanvas.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e)
+            {
+
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e)
+            {
+
+                System.out.println("mousePressed");
+
+                //                BasicFrame00.context.makeCurrent();
+                //                GL2 gl = BasicFrame00.context.getGL().getGL2();
+                //                gl.glWindowPos2f(0, 0);
+                //                gl.glBegin(GL.GL_LINE_STRIP);
+                //                gl.glColor3f(1.0f, 0f, 0f);
+                //                gl.glVertex3f(0,0,0);
+                //                gl.glVertex3f(100,50,0);
+                //                gl.glVertex3f(200,100,0);
+                //                gl.glVertex3f(100,150,0);
+                //                gl.glEnd();
+                //
+                //                gl.glColor3f(1.0f, 1f, 1f);
+                //
+                //                gl.glFlush();
+
+                //                BasicFrame00.context.release();
+
+
+                glcanvas.repaint();
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e)
+            {
+
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e)
+            {
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e)
+            {
+            }
+
+        });
 
         glcanvas.addMouseMotionListener(new MouseMotionListener() {
             @Override
@@ -246,9 +325,22 @@ public class BasicFrame00 implements GLEventListener {
             }
         });
 
+        glcanvas.addMouseWheelListener(new MouseWheelListener() {
+
+            @Override
+            public void mouseWheelMoved(MouseWheelEvent e)
+            {
+                // TODO Auto-generated method stub
+                //                BasicFrame00.drawable.display();
+            }
+
+        });
+
         // creating frame
         final JFrame frame = new JFrame("Basic Frame - Image & JOGL");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setResizable(false);
+
         //        frame.setExtendedState(Frame.MAXIMIZED_BOTH);
         //        frame.setUndecorated(true);
         //        frame.setSize(600, 600);
@@ -264,6 +356,7 @@ public class BasicFrame00 implements GLEventListener {
         c.setLayout(new BorderLayout());
         frame.getContentPane().add(glcanvas, BorderLayout.CENTER);
         frame.setSize(512 + 8 + 8, 512 + 30 + 8);
+        //        frame.setSize(512, 512);
         //        frame.setBounds(0, 0, 900, 900);
         System.out.println(frame.getContentPane().getPreferredSize());
         //        frame.setSize(frame.getContentPane().getPreferredSize());
