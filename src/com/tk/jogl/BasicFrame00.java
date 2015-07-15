@@ -69,28 +69,6 @@ public class BasicFrame00 implements GLEventListener {
         gl.glMatrixMode(GLMatrixFunc.GL_MODELVIEW);      // To operate on Model-View matrix
         gl.glLoadIdentity();                // Reset the model-view matrix
 
-        // Draw a Red 1x1 Square centered at origin
-        //        gl.glBegin(GL2GL3.GL_QUADS); // Each set of 4 vertices form a quad
-        //        gl.glColor3f(1.0f, 0.0f, 0.0f); // Red
-        //        gl.glVertex2f(-0.5f, -0.5f); // x, y
-        //        gl.glVertex2f(0.5f, -0.5f);
-        //        gl.glVertex2f(0.5f, 0.5f);
-        //        gl.glVertex2f(-0.5f, 0.5f);
-        //
-        //        gl.glVertex2f(-0.8f, 0.1f);
-        //        gl.glVertex2f(-0.2f, 0.1f);
-        //        gl.glVertex2f(-0.2f, 0.7f);
-        //        gl.glVertex2f(-0.8f, 0.7f);
-        //
-        //        gl.glColor3f(0.2f, 0.2f, 0.2f);  // Dark Gray
-        //        gl.glVertex2f(-0.9f, -0.7f);
-        //        gl.glColor3f(1.0f, 1.0f, 1.0f);  // White
-        //        gl.glVertex2f(-0.5f, -0.7f);
-        //        gl.glColor3f(0.2f, 0.2f, 0.2f);  // Dark Gray
-        //        gl.glVertex2f(-0.5f, -0.3f);
-        //        gl.glColor3f(1.0f, 1.0f, 1.0f);  // White
-        //        gl.glVertex2f(-0.9f, -0.3f);
-        //        gl.glEnd();
 
         //        TextRenderer textRenderer = new TextRenderer(new Font("Verdana", Font.BOLD, 12));
         //        textRenderer.beginRendering(900, 700);
@@ -153,42 +131,28 @@ public class BasicFrame00 implements GLEventListener {
             final GLU glu = new GLU();
             glu.gluOrtho2D(0, 512, 0, 512);
 
-
             //            gl.glPixelZoom(0.5f, 0.5f); // ** Zoom
-
             //            gl.glScalef(0.5f, 0.5f, 0);
-
             //            gl.glRasterPos2i(256, 256);
             //            gl.glWindowPos2i(0, 0);
-            //            gl.glRotatef(180f, 1.0f, 1.0f, 0.0f);
-            //            gl.glTranslatef(256, 256, 0);
-            //            gl.glRasterPos2i(0, 0);
 
             gl.glDrawPixels(w, h, GL.GL_LUMINANCE, GL.GL_UNSIGNED_BYTE, imgBuffer);
 
-            //            glu.gluLookAt(0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0, 1.0 ,0.0);
-
-            //            gl.glRotatef(90f, 0.0f, 1.0f, 0.0f);
-
-            //            gl.glBegin(GL2GL3.GL_QUADS); // Each set of 4 vertices form a quad
-            //            gl.glColor3f(0.0f, 1.0f, 0.0f); // Red
-            //            gl.glVertex2f(-256f, -256f); // x, y
-            //            gl.glVertex2f(256f, -256f);
-            //            gl.glVertex2f(256f, 256f);
-            //            gl.glVertex2f(-256f, 256f);
-            //            gl.glEnd();
 
             // *********** Draw String ************
             //gl.glPixelZoom(0.5f, 0.5f); // ** Zoom
             GLUT glut = new GLUT();
-            float textPosx = 10f;
-            float textPosy = 10f;
+            //            float textPosx = 10f;
+            //            float textPosy = 10f;
+            float textPosx = 0f;
+            float textPosy = 0f;
             // Move to rastering position
             gl.glRasterPos2f(textPosx, textPosy);
             //            gl.glWindowPos2f(textPosx, textPosy);
             gl.glColor3f(1.0f, 1.0f, 1.0f);
             // convert text to bitmap and tell what string to put
             glut.glutBitmapString(GLUT.BITMAP_HELVETICA_10, "Annotation");
+            //            gl.glRasterPos2f(-textPosx, -textPosy);
 
             gl.glRasterPos2f(0, 0);
             //            gl.glWindowPos2f(0, 0);
@@ -219,31 +183,31 @@ public class BasicFrame00 implements GLEventListener {
     public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
         System.out.println("reshape");
         System.out.println("width: " + width + "; height: " + height);
-        final GL2 gl = drawable.getGL().getGL2();
-        final GLU glu = new GLU();
-        // Compute aspect ratio of the new window
-        if (height == 0)
-        {
-            height = 1;                // To prevent divide by 0
-        }
-        //        GLfloat aspect = (GLfloat)width / (GLfloat)height;
-        float aspect = width*1.0f/height;
-
-        // Set the viewport to cover the new window
-        gl.glViewport(0, 0, width, height);
-
-        //        gl.glPixelZoom(width/512.0f, height/512.0f); // ** Zoom
-
-        //         Set the aspect ratio of the clipping area to match the viewport
-        gl.glMatrixMode(GLMatrixFunc.GL_PROJECTION);  // To operate on the Projection matrix
-        gl.glLoadIdentity();             // Reset the projection matrix
-        if (width >= height) {
-            // aspect >= 1, set the height from -1 to 1, with larger width
-            glu.gluOrtho2D(-1.0 * aspect, 1.0 * aspect, -1.0, 1.0);
-        } else {
-            // aspect < 1, set the width to -1 to 1, with larger height
-            glu.gluOrtho2D(-1.0, 1.0, -1.0 / aspect, 1.0 / aspect);
-        }
+        //        final GL2 gl = drawable.getGL().getGL2();
+        //        final GLU glu = new GLU();
+        //        // Compute aspect ratio of the new window
+        //        if (height == 0)
+        //        {
+        //            height = 1;                // To prevent divide by 0
+        //        }
+        //        //        GLfloat aspect = (GLfloat)width / (GLfloat)height;
+        //        float aspect = width*1.0f/height;
+        //
+        //        // Set the viewport to cover the new window
+        //        gl.glViewport(0, 0, width, height);
+        //
+        //        //        gl.glPixelZoom(width/512.0f, height/512.0f); // ** Zoom
+        //
+        //        //         Set the aspect ratio of the clipping area to match the viewport
+        //        gl.glMatrixMode(GLMatrixFunc.GL_PROJECTION);  // To operate on the Projection matrix
+        //        gl.glLoadIdentity();             // Reset the projection matrix
+        //        if (width >= height) {
+        //            // aspect >= 1, set the height from -1 to 1, with larger width
+        //            glu.gluOrtho2D(-1.0 * aspect, 1.0 * aspect, -1.0, 1.0);
+        //        } else {
+        //            // aspect < 1, set the width to -1 to 1, with larger height
+        //            glu.gluOrtho2D(-1.0, 1.0, -1.0 / aspect, 1.0 / aspect);
+        //        }
 
         // 重置模型观察矩阵堆栈
         //        gl.glMatrixMode(GLMatrixFunc.GL_MODELVIEW);
