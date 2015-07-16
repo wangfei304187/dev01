@@ -48,7 +48,7 @@ public class AppFrame extends JFrame {
         GLCapabilities capabilities = new GLCapabilities(profile);
 
         canvas = new CustomCanvas(capabilities);
-        canvas.setSize(600, 600);
+        canvas.setSize(512, 512);
         canvas.setBackground(Color.YELLOW);
 
         view = new SceneView();

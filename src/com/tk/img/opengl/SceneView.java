@@ -38,6 +38,8 @@ public class SceneView implements GLEventListener{
         GLU glu = new GLU();
         glu.gluOrtho2D(0, 512, 0, 512);
 
+        canvas.clear();
+
         List li = canvas.getShapes();
         for(int i=0; i<li.size(); i++) {
             IGLObject obj = (IGLObject)li.get(i);
