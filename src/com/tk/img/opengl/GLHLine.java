@@ -19,8 +19,12 @@ public class GLHLine implements IGLObject
 	public void draw(GLAutoDrawable drawable)
 	{
 		GL2 gl = drawable.getGL().getGL2();
-		gl.glBegin(GL.GL_LINES);
 
+		//gl.glPointSize(5.0f);
+
+		gl.glLineWidth(2.0f); // call before glBegin
+
+		gl.glBegin(GL.GL_LINES);
 
 		gl.glColor3f(1.0f, 0.51f, 0.98f); // #FF83FA
 
