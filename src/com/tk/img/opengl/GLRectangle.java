@@ -136,6 +136,25 @@ public class GLRectangle implements IGLObject
      *     ----------------------
      * (x1, y1)               (x2, y1)
      *
+     *
+     *
+     * (x2, y1)               (x1, y1)
+     *     ----------------------
+     *     |                    |
+     *     |                    |
+     *     ----------------------
+     * (x2, y2)               (x1, y2)
+     *
+     *
+     *
+     *
+     * (x2, y2)               (x1, y2)
+     *     ----------------------
+     *     |                    |
+     *     |                    |
+     *     ----------------------
+     * (x2, y1)               (x1, y1)
+     *
      */
 
 
@@ -150,30 +169,32 @@ public class GLRectangle implements IGLObject
         int width = Constants.HIT_BOX_SIZE;
         int height = Constants.HIT_BOX_SIZE;
 
-        Rectangle r = new Rectangle(x1, y1, x2, y2);
 
-        Line2D.Float topLine = new Line2D.Float(x1, y1, x2, y1);
-        if(topLine.intersects(boxX, boxY, width, height)) {
-            return Constants.RECT_TOP_SIDE_SELECTED;
+        if(x1 < x2 && y1 > y2) {
+            Line2D.Float topLine = new Line2D.Float(x1, y1, x2, y1);
+            if(topLine.intersects(boxX, boxY, width, height)) {
+                return Constants.RECT_TOP_SIDE_SELECTED;
+            }
+
+            Line2D.Float rightLine = new Line2D.Float(x2, y1, x2, y2);
+            if(rightLine.intersects(boxX, boxY, width, height)) {
+                return Constants.RECT_RIGHT_SIDE_SELECTED;
+            }
+
+            Line2D.Float bottomLine = new Line2D.Float(x1, y2, x2, y2);
+            if(rightLine.intersects(boxX, boxY, width, height)) {
+                return Constants.RECT_BOTTOM_SIDE_SELECTED;
+            }
+
+            Line2D.Float leftLine = new Line2D.Float(x1, y1, x1, y2);
+            if(rightLine.intersects(boxX, boxY, width, height)) {
+                return Constants.RECT_LEFT_SIDE_SELECTED;
+            }
+
         }
 
-        Line2D.Float rightLine = new Line2D.Float(x2, y1, x2, y2);
-        if(rightLine.intersects(boxX, boxY, width, height)) {
-            return Constants.RECT_RIGHT_SIDE_SELECTED;
-        }
-
-        Line2D.Float bottomLine = new Line2D.Float(x1, y2, x2, y2);
-        if(rightLine.intersects(boxX, boxY, width, height)) {
-            return Constants.RECT_BOTTOM_SIDE_SELECTED;
-        }
-
-        Line2D.Float leftLine = new Line2D.Float(x1, y1, x1, y2);
-        if(rightLine.intersects(boxX, boxY, width, height)) {
-            return Constants.RECT_LEFT_SIDE_SELECTED;
-        }
 
         return Constants.RECT_NO_SIDE_SELECTED;
-
     }
 
 

@@ -109,9 +109,14 @@ public class CustomCanvas extends GLCanvas
                         if(side == Constants.RECT_TOP_SIDE_SELECTED) {
                             int y1 = selRect.getLeftTop().y; // relative to left-bottom corner
                             int y2 = selRect.getRightBottom().y;
-                            int minY = y1 > y2 ? y2 : y1;
-                            int y = rectP2.y > minY ? rectP2.y : minY + 1;
-                            selRect.setY1(y);
+                            int y;
+                            if(y1 > y2) {
+                                y = rectP2.y > y2 ? rectP2.y : y2 + 1;
+                                selRect.setY1(y);
+                            }else {
+                                y = rectP2.y > y1 ? rectP2.y : y1 + 1;
+                                selRect.setY2(y);
+                            }
                         }
                         else if(side == Constants.RECT_RIGHT_SIDE_SELECTED) {
                             CustomCanvas.this.setCursor(new Cursor(Cursor.E_RESIZE_CURSOR));
