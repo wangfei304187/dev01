@@ -18,6 +18,12 @@ public class GLHLine implements IGLObject
 
     private boolean selected = false;
 
+    @Override
+    public String getName()
+    {
+        return name;
+    }
+
     public void setY(int y) {
         this.y = y;
     }
@@ -61,12 +67,6 @@ public class GLHLine implements IGLObject
         gl.glVertex2f(x1, y); // start point
         gl.glVertex2f(x2, y); // end point
         gl.glEnd();
-    }
-
-    @Override
-    public String getName()
-    {
-        return name;
     }
 
     // p : relative to left-bottom corner

@@ -136,10 +136,11 @@ public class BasicFrame00 implements GLEventListener {
 
             final GLU glu = new GLU();
             glu.gluOrtho2D(0, 512, 0, 512);
+            //            glu.gluOrtho2D(0, 512, 512, 0);
 
             //            gl.glPixelZoom(0.5f, 0.5f); // ** Zoom
             //            gl.glScalef(0.5f, 0.5f, 0);
-            //            gl.glRasterPos2i(256, 256);
+            //            gl.glRasterPos2i(0, 512);
             //            gl.glWindowPos2i(0, 0);
 
             gl.glDrawPixels(w, h, GL.GL_LUMINANCE, GL.GL_UNSIGNED_BYTE, imgBuffer);

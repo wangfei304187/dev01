@@ -23,16 +23,6 @@ public class SceneView implements GLEventListener{
         this.canvas = canvas;
     }
 
-    public void clear() {
-        GL2 gl = drawable.getGL().getGL2();
-        gl.glClearColor(0.0f, 1.0f, 0.0f, 1.0f);
-        gl.glClear(GL.GL_COLOR_BUFFER_BIT);
-        gl.glMatrixMode(GLMatrixFunc.GL_PROJECTION);
-        gl.glLoadIdentity();
-        gl.glOrtho(0, 511, 0, 511, -511, 511);
-        gl.glFlush();
-    }
-
     @Override
     public void init(GLAutoDrawable drawable) {
         GL2 gl = drawable.getGL().getGL2();
@@ -56,6 +46,12 @@ public class SceneView implements GLEventListener{
         List li = canvas.getShapes();
         for(int i=0; i<li.size(); i++) {
             IGLObject obj = (IGLObject)li.get(i);
+            obj.draw(drawable);
+        }
+
+        List rectLi = canvas.getRectLayer();
+        for(int i=0; i<rectLi.size(); i++) {
+            IGLObject obj = (IGLObject)rectLi.get(i);
             obj.draw(drawable);
         }
 

@@ -42,6 +42,7 @@ public class BasicFrame04 implements GLEventListener {
 
         final GLU glu = new GLU();
         glu.gluOrtho2D(0, 512, 0, 512);
+        //        glu.gluOrtho2D(0, 512, 512, 0);
 
 
         int defaultWinWidth = 1 << 12;

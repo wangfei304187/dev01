@@ -100,6 +100,7 @@ public class AppFrame extends JFrame {
         GLHLine hlineObj = new GLHLine(Constants.TOP_HLINE);
         canvas.addShape(hlineObj);
 
+
         canvas.setImmediate(oldFlag);
         canvas.refresh();
 

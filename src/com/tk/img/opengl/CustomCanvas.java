@@ -1,5 +1,6 @@
 package com.tk.img.opengl;
 
+import java.awt.Cursor;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -15,9 +16,23 @@ public class CustomCanvas extends GLCanvas
 {
     private List<IGLObject> li = new ArrayList<IGLObject>();
 
+    private List<IGLObject> rectLayer = new ArrayList<IGLObject>();
+
     private boolean immediateRefresh = false;
 
     private SceneView view;
+
+    // 0: image & line
+    // 1: rectangle mode
+    // 2: annotation mode
+    private int LAYER_MODE = 1;
+
+    // 0: select rect mode
+    // 1: create rect mode
+    private int RECT_OP_MODE = 0;
+
+    private Point rectP1;
+    private Point rectP2;
 
     public CustomCanvas(GLCapabilitiesImmutable capabiliteis) {
         super(capabiliteis);
@@ -31,35 +46,115 @@ public class CustomCanvas extends GLCanvas
             @Override
             public void mousePressed(MouseEvent e)
             {
-                GLHLine topHLine = getTopHLine();
-                if(!topHLine.isSelected()) {
-
-                    //                    float distance = topHLine.getY() - convertY(e.getY());
+                if(LAYER_MODE == 0) {
+                    //                    GLHLine topHLine = getTopHLine();
+                    //                    if(!topHLine.isSelected()) {
                     //
-                    //                    if(distance < 5f && distance > -5f) {
-                    //                        topHLine.setSelected(true);
-                    //                        repaintSelectedHLine(topHLine);
+                    //                        //                    float distance = topHLine.getY() - convertY(e.getY());
+                    //                        //
+                    //                        //                    if(distance < 5f && distance > -5f) {
+                    //                        //                        topHLine.setSelected(true);
+                    //                        //                        repaintSelectedHLine(topHLine);
+                    //                        //                    }
+                    //
+                    //                        // convert y relative to left-bottom corner
+                    //                        boolean flag = topHLine.canSelected(convertLBPoint(e.getPoint()));
+                    //                        if(flag) {
+                    //                            topHLine.setSelected(true);
+                    //                            repaintSelectedHLine(topHLine);
+                    //                        }
                     //                    }
-
-                    // convert y relative to left-bottom corner
-                    boolean flag = topHLine.canSelected(convertLBPoint(e.getPoint()));
-                    if(flag) {
-                        topHLine.setSelected(true);
-                        repaintSelectedHLine(topHLine);
-                    }
                 }
+                else if(LAYER_MODE == 1) {
+                    rectP1 = convertLBPoint(e.getPoint());
+
+                    RECT_OP_MODE = getRectOpMode(rectP1);
+
+                    GLRectangle rect = getSelectedRect(rectP1);
+                    int side = rect.getSelectedSide(rectP1);
+
+                    updateCursor(side);
+                }
+                else {
+
+                }
+
             }
 
             @Override
             public void mouseReleased(MouseEvent e)
             {
-                GLHLine topHLine = getTopHLine();
-                if(topHLine.isSelected()) {
-                    topHLine.setSelected(false);
-                    topHLine.setY(convertLBY(e.getY()));
+                if(LAYER_MODE == 0) {
+                    GLHLine topHLine = getTopHLine();
+                    if(topHLine.isSelected()) {
+                        topHLine.setSelected(false);
+                        topHLine.setY(convertLBY(e.getY()));
 
-                    repaintDefaultHLine(topHLine);
+                        repaintDefaultHLine(topHLine);
+                    }
+                }else if(LAYER_MODE == 1) {
+                    if(rectP1 == null) {
+                        return;
+                    }
+
+                    if(RECT_OP_MODE == 0) {
+                        GLRectangle selRect = getSelectedRect(rectP1);
+                        int side = selRect.getSelectedSide(rectP1);
+                        if(side == Constants.RECT_NO_SIDE_SELECTED) {
+                            throw new RuntimeException("*** selected side is invalid ***");
+                        }
+
+                        rectP2 = convertLBPoint(e.getPoint());
+
+                        if(side == Constants.RECT_TOP_SIDE_SELECTED) {
+                            int y1 = selRect.getLeftTop().y; // relative to left-bottom corner
+                            int y2 = selRect.getRightBottom().y;
+                            int minY = y1 > y2 ? y2 : y1;
+                            int y = rectP2.y > minY ? rectP2.y : minY + 1;
+                            selRect.setY1(y);
+                        }
+                        else if(side == Constants.RECT_RIGHT_SIDE_SELECTED) {
+                            CustomCanvas.this.setCursor(new Cursor(Cursor.E_RESIZE_CURSOR));
+                        }
+                        else if(side == Constants.RECT_BOTTOM_SIDE_SELECTED) {
+                            CustomCanvas.this.setCursor(new Cursor(Cursor.S_RESIZE_CURSOR));
+                        }
+                        else if(side == Constants.RECT_LEFT_SIDE_SELECTED) {
+                            CustomCanvas.this.setCursor(new Cursor(Cursor.W_RESIZE_CURSOR));
+                        }
+                        else {
+                            throw new RuntimeException("*** selected side is invalid ***");
+                        }
+
+                        repaintRect(selRect);
+
+                        CustomCanvas.this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+
+                        rectP1 = null;
+                        rectP2 = null;
+                        RECT_OP_MODE = -1;
+                    }
+                    else if(RECT_OP_MODE == 1) { // CREATE
+                        rectP2 = convertLBPoint(e.getPoint());
+                        GLRectangle rectObj = new GLRectangle(null);
+                        rectObj.setLeftTop(rectP1);
+                        rectObj.setRightBottom(rectP2);
+                        addRect(rectObj);
+
+                        repaintRect(rectObj);
+
+                        rectP1 = null;
+                        rectP2 = null;
+                        RECT_OP_MODE = -1;
+                    }
+                    else {
+                        //
+                    }
                 }
+                else {
+
+                }
+
             }
 
             @Override
@@ -78,18 +173,61 @@ public class CustomCanvas extends GLCanvas
 
             @Override
             public void mouseDragged(MouseEvent e) {
-                GLHLine topHLine = getTopHLine();
-                if(topHLine.isSelected()) {
-                    topHLine.setY(convertLBY(e.getY()));
+                if(LAYER_MODE == 0) {
+                    GLHLine topHLine = getTopHLine();
+                    if(topHLine.isSelected()) {
+                        topHLine.setY(convertLBY(e.getY()));
 
-                    repaintSelectedHLine(topHLine);
+                        repaintSelectedHLine(topHLine);
+                    }
+                }
+                else if(LAYER_MODE == 1) {
+                    if(rectP1.equals(rectP2)) {
+                        return;
+                    }
+
+                    if(RECT_OP_MODE == 0) { // SELECT RECT
+
+                    }
+                    else if(RECT_OP_MODE == 1) { // CREATE RECT
+                        rectP2 = convertLBPoint(e.getPoint());
+                        GLRectangle rectObj = new GLRectangle(null);
+                        rectObj.setLeftTop(rectP1);
+                        rectObj.setRightBottom(rectP2);
+                        addRect(rectObj);
+                        repaintRect(rectObj);
+                    }
+                    else {
+                        //
+                    }
+                }
+                else {
+
                 }
             }
 
             @Override
             public void mouseMoved(MouseEvent e) {
-                // TODO Auto-generated method stub
+                if(LAYER_MODE == 0) {
+                    GLHLine topHLine = getTopHLine();
+                    //                    if(!topHLine.isSelected()) {
+                    // convert y relative to left-bottom corner
+                    boolean flag = topHLine.canSelected(convertLBPoint(e.getPoint()));
+                    if(flag) {
+                        topHLine.setSelected(true);
+                        repaintSelectedHLine(topHLine);
+                    }else {
+                        topHLine.setSelected(false);
+                        repaintDefaultHLine(topHLine);
+                    }
+                    //                    }
+                }
+                else if(LAYER_MODE == 1) {
 
+                }
+                else {
+
+                }
             }
 
         });
@@ -116,6 +254,24 @@ public class CustomCanvas extends GLCanvas
 
     public void removeShape(IGLObject obj) {
         li.remove(obj);
+        if(immediateRefresh) {
+            refresh();
+        }
+    }
+
+    public List getRectLayer() {
+        return rectLayer;
+    }
+
+    public void addRect(IGLObject obj) {
+        rectLayer.add(obj);
+        if(immediateRefresh) {
+            refresh();
+        }
+    }
+
+    public void removeRect(IGLObject obj) {
+        rectLayer.remove(obj);
         if(immediateRefresh) {
             refresh();
         }
@@ -178,6 +334,73 @@ public class CustomCanvas extends GLCanvas
             }
         }
         return null;
+    }
+
+    public void repaintRect(GLRectangle rect) {
+        refresh();
+    }
+
+    public GLRectangle getRect(Point p1, Point p2) {
+        for (IGLObject obj : rectLayer)
+        {
+            if(obj instanceof GLRectangle) {
+                GLRectangle rect = (GLRectangle)obj;
+            }
+        }
+        return null;
+    }
+
+    public int getRectOpMode(Point p) {
+        List li = getRectLayer();
+        for(int i=li.size()-1; i>=0; i--) {
+            GLRectangle rect = (GLRectangle)li.get(i);
+            if(rect.canSelected(p)) {
+                return 0; // SELECT RECT MODE
+            }
+        }
+        return 1; // CREATE RECT MODE
+    }
+
+    //    public List getSelectedRects(Point p) {
+    //        List result = new ArrayList();
+    //        List li = getRectLayer();
+    //        for(int i=0; i<li.size()-1; i++) {
+    //            GLRectangle rect = (GLRectangle)li.get(i);
+    //            if(rect.canSelected(p)) {
+    //                rect.setSelected(true);
+    //                result.add(rect);
+    //            }
+    //        }
+    //        return result;
+    //    }
+
+    public GLRectangle getSelectedRect(Point p) {
+        List li = getRectLayer();
+        for(int i=li.size()-1; i>=0; i--) {
+            GLRectangle rect = (GLRectangle)li.get(i);
+            if(rect.canSelected(p)) {
+                return rect;
+            }
+        }
+        return null;
+    }
+
+    public void updateCursor(int selectedSide) {
+        if(selectedSide == Constants.RECT_TOP_SIDE_SELECTED) {
+            CustomCanvas.this.setCursor(new Cursor(Cursor.N_RESIZE_CURSOR));
+        }
+        else if(selectedSide == Constants.RECT_RIGHT_SIDE_SELECTED) {
+            CustomCanvas.this.setCursor(new Cursor(Cursor.E_RESIZE_CURSOR));
+        }
+        else if(selectedSide == Constants.RECT_BOTTOM_SIDE_SELECTED) {
+            CustomCanvas.this.setCursor(new Cursor(Cursor.S_RESIZE_CURSOR));
+        }
+        else if(selectedSide == Constants.RECT_LEFT_SIDE_SELECTED) {
+            CustomCanvas.this.setCursor(new Cursor(Cursor.W_RESIZE_CURSOR));
+        }
+        else {
+            throw new RuntimeException("*** selected side is invalid ***");
+        }
     }
 
 }

@@ -12,7 +12,6 @@ import javax.swing.JFrame;
 
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2;
-import com.jogamp.opengl.GL2GL3;
 import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.GLCapabilities;
 import com.jogamp.opengl.GLEventListener;
@@ -35,66 +34,77 @@ public class BasicFrame02 implements GLEventListener
         gl.glMatrixMode(GLMatrixFunc.GL_MODELVIEW);      // To operate on Model-View matrix
         gl.glLoadIdentity();                // Reset the model-view matrix
 
-        gl.glTranslatef(-0.5f, 0.4f, 0.0f); // Translate left and up
-        gl.glBegin(GL2GL3.GL_QUADS);               // Each set of 4 vertices form a quad
-        gl.glColor3f(1.0f, 0.0f, 0.0f);  // Red
-        gl.glVertex2f(-0.3f, -0.3f);     // Define vertices in counter-clockwise (CCW) order
-        gl.glVertex2f( 0.3f, -0.3f);     //  so that the normal (front-face) is facing you
-        gl.glVertex2f( 0.3f,  0.3f);
-        gl.glVertex2f(-0.3f,  0.3f);
-        gl.glEnd();
+        //        gl.glTranslatef(-0.5f, 0.4f, 0.0f); // Translate left and up
+        //        gl.glBegin(GL2GL3.GL_QUADS);               // Each set of 4 vertices form a quad
+        //        gl.glColor3f(1.0f, 0.0f, 0.0f);  // Red
+        //        gl.glVertex2f(-0.3f, -0.3f);     // Define vertices in counter-clockwise (CCW) order
+        //        gl.glVertex2f( 0.3f, -0.3f);     //  so that the normal (front-face) is facing you
+        //        gl.glVertex2f( 0.3f,  0.3f);
+        //        gl.glVertex2f(-0.3f,  0.3f);
+        //        gl.glEnd();
+        //
+        //        gl.glTranslatef(0.1f, -0.7f, 0.0f); // Translate right and down
+        //        gl.glBegin(GL2GL3.GL_QUADS);               // Each set of 4 vertices form a quad
+        //        gl.glColor3f(0.0f, 1.0f, 0.0f); // Green
+        //        gl.glVertex2f(-0.3f, -0.3f);
+        //        gl.glVertex2f( 0.3f, -0.3f);
+        //        gl.glVertex2f( 0.3f,  0.3f);
+        //        gl.glVertex2f(-0.3f,  0.3f);
+        //        gl.glEnd();
+        //
+        //        gl.glTranslatef(-0.3f, -0.2f, 0.0f); // Translate left and down
+        //        gl.glBegin(GL2GL3.GL_QUADS);                // Each set of 4 vertices form a quad
+        //        gl.glColor3f(0.2f, 0.2f, 0.2f); // Dark Gray
+        //        gl.glVertex2f(-0.2f, -0.2f);
+        //        gl.glColor3f(1.0f, 1.0f, 1.0f); // White
+        //        gl.glVertex2f( 0.2f, -0.2f);
+        //        gl.glColor3f(0.2f, 0.2f, 0.2f); // Dark Gray
+        //        gl.glVertex2f( 0.2f,  0.2f);
+        //        gl.glColor3f(1.0f, 1.0f, 1.0f); // White
+        //        gl.glVertex2f(-0.2f,  0.2f);
+        //        gl.glEnd();
+        //
+        //        gl.glTranslatef(1.1f, 0.2f, 0.0f); // Translate right and up
+        //        gl.glBegin(GL.GL_TRIANGLES);          // Each set of 3 vertices form a triangle
+        //        gl.glColor3f(0.0f, 0.0f, 1.0f); // Blue
+        //        gl.glVertex2f(-0.3f, -0.2f);
+        //        gl.glVertex2f( 0.3f, -0.2f);
+        //        gl.glVertex2f( 0.0f,  0.3f);
+        //        gl.glEnd();
+        //
+        //        gl.glTranslatef(0.2f, -0.3f, 0.0f);     // Translate right and down
+        //        gl.glRotatef(180.0f, 0.0f, 0.0f, 1.0f); // Rotate 180 degree
+        //        gl.glBegin(GL.GL_TRIANGLES);               // Each set of 3 vertices form a triangle
+        //        gl.glColor3f(1.0f, 0.0f, 0.0f); // Red
+        //        gl.glVertex2f(-0.3f, -0.2f);
+        //        gl.glColor3f(0.0f, 1.0f, 0.0f); // Green
+        //        gl.glVertex2f( 0.3f, -0.2f);
+        //        gl.glColor3f(0.0f, 0.0f, 1.0f); // Blue
+        //        gl.glVertex2f( 0.0f,  0.3f);
+        //        gl.glEnd();
+        //
+        //        gl.glRotatef(-180.0f, 0.0f, 0.0f, 1.0f); // Undo previous rotate
+        //        gl.glTranslatef(-0.1f, 1.0f, 0.0f);      // Translate right and down
+        //        gl.glBegin(GL2.GL_POLYGON);                  // The vertices form one closed polygon
+        //        gl.glColor3f(1.0f, 1.0f, 0.0f); // Yellow
+        //        gl.glVertex2f(-0.1f, -0.2f);
+        //        gl.glVertex2f( 0.1f, -0.2f);
+        //        gl.glVertex2f( 0.2f,  0.0f);
+        //        gl.glVertex2f( 0.1f,  0.2f);
+        //        gl.glVertex2f(-0.1f,  0.2f);
+        //        gl.glVertex2f(-0.2f,  0.0f);
+        //        gl.glEnd();
 
-        gl.glTranslatef(0.1f, -0.7f, 0.0f); // Translate right and down
-        gl.glBegin(GL2GL3.GL_QUADS);               // Each set of 4 vertices form a quad
-        gl.glColor3f(0.0f, 1.0f, 0.0f); // Green
-        gl.glVertex2f(-0.3f, -0.3f);
-        gl.glVertex2f( 0.3f, -0.3f);
-        gl.glVertex2f( 0.3f,  0.3f);
-        gl.glVertex2f(-0.3f,  0.3f);
-        gl.glEnd();
+        GLU glu = new GLU();
+        glu.gluOrtho2D(0, 0, 500, 500);
 
-        gl.glTranslatef(-0.3f, -0.2f, 0.0f); // Translate left and down
-        gl.glBegin(GL2GL3.GL_QUADS);                // Each set of 4 vertices form a quad
-        gl.glColor3f(0.2f, 0.2f, 0.2f); // Dark Gray
-        gl.glVertex2f(-0.2f, -0.2f);
-        gl.glColor3f(1.0f, 1.0f, 1.0f); // White
-        gl.glVertex2f( 0.2f, -0.2f);
-        gl.glColor3f(0.2f, 0.2f, 0.2f); // Dark Gray
-        gl.glVertex2f( 0.2f,  0.2f);
-        gl.glColor3f(1.0f, 1.0f, 1.0f); // White
-        gl.glVertex2f(-0.2f,  0.2f);
-        gl.glEnd();
-
-        gl.glTranslatef(1.1f, 0.2f, 0.0f); // Translate right and up
-        gl.glBegin(GL.GL_TRIANGLES);          // Each set of 3 vertices form a triangle
-        gl.glColor3f(0.0f, 0.0f, 1.0f); // Blue
-        gl.glVertex2f(-0.3f, -0.2f);
-        gl.glVertex2f( 0.3f, -0.2f);
-        gl.glVertex2f( 0.0f,  0.3f);
-        gl.glEnd();
-
-        gl.glTranslatef(0.2f, -0.3f, 0.0f);     // Translate right and down
-        gl.glRotatef(180.0f, 0.0f, 0.0f, 1.0f); // Rotate 180 degree
-        gl.glBegin(GL.GL_TRIANGLES);               // Each set of 3 vertices form a triangle
-        gl.glColor3f(1.0f, 0.0f, 0.0f); // Red
-        gl.glVertex2f(-0.3f, -0.2f);
-        gl.glColor3f(0.0f, 1.0f, 0.0f); // Green
-        gl.glVertex2f( 0.3f, -0.2f);
-        gl.glColor3f(0.0f, 0.0f, 1.0f); // Blue
-        gl.glVertex2f( 0.0f,  0.3f);
-        gl.glEnd();
-
-        gl.glRotatef(-180.0f, 0.0f, 0.0f, 1.0f); // Undo previous rotate
-        gl.glTranslatef(-0.1f, 1.0f, 0.0f);      // Translate right and down
-        gl.glBegin(GL2.GL_POLYGON);                  // The vertices form one closed polygon
-        gl.glColor3f(1.0f, 1.0f, 0.0f); // Yellow
-        gl.glVertex2f(-0.1f, -0.2f);
-        gl.glVertex2f( 0.1f, -0.2f);
-        gl.glVertex2f( 0.2f,  0.0f);
-        gl.glVertex2f( 0.1f,  0.2f);
-        gl.glVertex2f(-0.1f,  0.2f);
-        gl.glVertex2f(-0.2f,  0.0f);
-        gl.glEnd();
+        gl.glEnable(GL.GL_BLEND);
+        gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
+        gl.glColor4f(1.0f, 0.0f, 0.0f, 0.3f);
+        gl.glRectf(100, 100,200, 200);
+        gl.glColor4f(0.0f, 1.0f, 0.0f, 0.3f);
+        gl.glRectf(150f, 150f, 250f, 250f);
+        gl.glDisable(GL.GL_BLEND);
 
         gl.glFlush();   // Render now
     }

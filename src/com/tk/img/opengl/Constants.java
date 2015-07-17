@@ -18,4 +18,12 @@ public class Constants
 
     public static final int HIT_BOX_SIZE = 2;
 
+
+    public static final int RECT_NO_SIDE_SELECTED = -1;
+    public static final int RECT_TOP_SIDE_SELECTED = 0;
+    public static final int RECT_RIGHT_SIDE_SELECTED = 1;
+    public static final int RECT_BOTTOM_SIDE_SELECTED = 2;
+    public static final int RECT_LEFT_SIDE_SELECTED = 3;
+
+
 }
