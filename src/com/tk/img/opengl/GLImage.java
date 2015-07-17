@@ -53,4 +53,10 @@ public class GLImage implements IGLObject
         gl.glDrawPixels(w, h, GL.GL_LUMINANCE, GL.GL_UNSIGNED_BYTE, imgBuffer);
     }
 
+    @Override
+    public String getName()
+    {
+        return null;
+    }
+
 }

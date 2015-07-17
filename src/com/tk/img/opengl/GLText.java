@@ -38,4 +38,10 @@ public class GLText implements IGLObject
         gl.glRasterPos2f(0, 0);
     }
 
+    @Override
+    public String getName()
+    {
+        return null;
+    }
+
 }

@@ -2,7 +2,7 @@ package com.tk.img.opengl;
 
 import com.jogamp.opengl.GLAutoDrawable;
 
-public interface IGLObject
+public interface IGLObject extends IName
 {
-    public abstract void draw(GLAutoDrawable glDrawable);
+    public void draw(GLAutoDrawable glDrawable);
 }

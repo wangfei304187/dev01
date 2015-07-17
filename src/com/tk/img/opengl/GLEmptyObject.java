@@ -2,12 +2,15 @@ package com.tk.img.opengl;
 
 import com.jogamp.opengl.GLAutoDrawable;
 
-public class GLRectangle implements IGLObject
-{
+public class GLEmptyObject implements IGLObject {
+
+    public GLEmptyObject() {
+    }
 
     @Override
-    public void draw(GLAutoDrawable drawable)
+    public void draw(GLAutoDrawable glDrawable)
     {
+        //do nothing
     }
 
     @Override
